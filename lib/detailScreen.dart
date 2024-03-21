@@ -2,6 +2,7 @@ import 'package:fgd_2/components/cart_widget.dart';
 import 'package:fgd_2/data/product.dart';
 import 'package:fgd_2/providers/cart.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class DetailScreen extends StatefulWidget {
@@ -33,6 +34,7 @@ class _DetailScreenState extends State<DetailScreen> {
   @override
   Widget build(BuildContext context) {
     final cart = Provider.of<Cart>(context, listen: false);
+    var formatter = NumberFormat.decimalPattern('id');
     return Scaffold(
       appBar: AppBar(
         title: Image.asset(
@@ -49,6 +51,7 @@ class _DetailScreenState extends State<DetailScreen> {
             },
           ),
         ],
+        surfaceTintColor: Colors.white,
         backgroundColor: Colors.white,
       ),
       body: SingleChildScrollView(
@@ -165,7 +168,7 @@ class _DetailScreenState extends State<DetailScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  Text('Rp ${widget.product.price}',
+                  Text('Rp ${formatter.format(widget.product.price)}',
                       style: TextStyle(fontSize: 20, color: Color(0xFFBD8456))),
                   Container(
                     decoration: BoxDecoration(
@@ -224,8 +227,12 @@ class _DetailScreenState extends State<DetailScreen> {
                       duration: Duration(seconds: 1),
                     ),
                   );
-                  cart.addCart(widget.product.id, widget.product.name,
-                      widget.product.price.toDouble(), quantity);
+                  cart.addCart(
+                      widget.product.id,
+                      widget.product.name,
+                      widget.product.price.toDouble(),
+                      quantity,
+                      widget.product.image);
                 },
                 style: ElevatedButton.styleFrom(
                     shape: RoundedRectangleBorder(

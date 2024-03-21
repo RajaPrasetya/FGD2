@@ -3,6 +3,7 @@ import 'package:fgd_2/data/product.dart';
 import 'package:fgd_2/detailScreen.dart';
 import 'package:fgd_2/providers/cart.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -19,6 +20,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        surfaceTintColor: Colors.white,
         leading: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Icon(Icons.menu),
@@ -169,13 +171,13 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       itemCount: products.length,
                       itemBuilder: (context, index) {
-                        return buildCard(products[index]);
+                        return BuildCard(product: products[index]);
                       },
                     )
                   : ListView.builder(
                       itemCount: products.length,
                       itemBuilder: (context, index) {
-                        return buildCard(products[index]);
+                        return BuildCard(product: products[index]);
                       },
                     ),
             ),
@@ -184,8 +186,15 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
+}
 
-  Widget buildCard(Product product) {
+class BuildCard extends StatelessWidget {
+  final Product product;
+  const BuildCard({super.key, required this.product});
+
+  @override
+  Widget build(BuildContext context) {
+    var formatter = NumberFormat.decimalPattern('id');
     return GestureDetector(
       onTap: () {
         Navigator.push(
@@ -218,7 +227,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               SizedBox(height: 10),
               Text(
-                'Rp ${product.price}',
+                'Rp ${formatter.format(product.price)}',
                 style: TextStyle(color: Color(0xFFBD8456)),
               ),
               SizedBox(
