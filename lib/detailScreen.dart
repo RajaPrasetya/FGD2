@@ -1,5 +1,8 @@
+import 'package:fgd_2/components/cart_widget.dart';
 import 'package:fgd_2/data/product.dart';
+import 'package:fgd_2/providers/cart.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class DetailScreen extends StatefulWidget {
   final Product product;
@@ -29,6 +32,7 @@ class _DetailScreenState extends State<DetailScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final cart = Provider.of<Cart>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
         title: Image.asset(
@@ -37,9 +41,12 @@ class _DetailScreenState extends State<DetailScreen> {
         ),
         centerTitle: true,
         actions: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Icon(Icons.shopping_cart),
+          Consumer<Cart>(
+            builder: (context, value, child) {
+              return CartWidget(
+                qty: value.totalItem.toString(),
+              );
+            },
           ),
         ],
         backgroundColor: Colors.white,
@@ -158,7 +165,7 @@ class _DetailScreenState extends State<DetailScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  Text(widget.product.price,
+                  Text('Rp ${widget.product.price}',
                       style: TextStyle(fontSize: 20, color: Color(0xFFBD8456))),
                   Container(
                     decoration: BoxDecoration(
@@ -206,30 +213,41 @@ class _DetailScreenState extends State<DetailScreen> {
                   )
                 ],
               ),
-              SizedBox(height: 50,),
-             ElevatedButton(
-                  onPressed: () {},
-                  style: ElevatedButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      backgroundColor: Color(0xFFBD8456)),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          'ADD TO CART',
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
-                              color: Colors.white),
-                        ),
-                      ],
+              SizedBox(
+                height: 50,
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Berhasil Ditambahkan'),
+                      duration: Duration(seconds: 1),
                     ),
+                  );
+                  cart.addCart(widget.product.id, widget.product.name,
+                      widget.product.price.toDouble(), quantity);
+                },
+                style: ElevatedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    backgroundColor: Color(0xFFBD8456)),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        'ADD TO CART',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            color: Colors.white),
+                      ),
+                    ],
                   ),
                 ),
+              ),
             ],
           ),
         ),

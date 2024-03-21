@@ -1,6 +1,9 @@
+import 'package:fgd_2/components/cart_widget.dart';
 import 'package:fgd_2/data/product.dart';
 import 'package:fgd_2/detailScreen.dart';
+import 'package:fgd_2/providers/cart.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -26,10 +29,13 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         centerTitle: true,
         actions: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Icon(Icons.shopping_cart),
-          ),
+          Consumer<Cart>(
+            builder: (context, value, child) {
+              return CartWidget(
+                qty: value.totalItem.toString(),
+              );
+            },
+          )
         ],
         backgroundColor: Colors.white,
       ),
@@ -72,7 +78,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         Image.asset(
                           'assets/cakes.png',
                           height: 30,
-                        ), 
+                        ),
                         Text('Cakes'),
                       ],
                     ),
@@ -80,8 +86,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       foregroundColor: Colors.black,
                       backgroundColor: Colors.white,
                       shape: RoundedRectangleBorder(
-                        borderRadius:
-                            BorderRadius.circular(30), 
+                        borderRadius: BorderRadius.circular(30),
                       ),
                     ),
                   ),
@@ -89,14 +94,13 @@ class _HomeScreenState extends State<HomeScreen> {
                     width: 20,
                   ),
                   ElevatedButton(
-                    onPressed: () {
-                    },
+                    onPressed: () {},
                     child: Row(
                       children: <Widget>[
                         Image.asset(
                           'assets/cupcakes.png',
                           height: 30,
-                        ), 
+                        ),
                         Text('Cakes'),
                       ],
                     ),
@@ -104,8 +108,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       foregroundColor: Colors.black,
                       backgroundColor: Colors.white,
                       shape: RoundedRectangleBorder(
-                        borderRadius:
-                            BorderRadius.circular(30), 
+                        borderRadius: BorderRadius.circular(30),
                       ),
                     ),
                   ),
@@ -113,8 +116,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     width: 20,
                   ),
                   ElevatedButton(
-                    onPressed: () {
-                    },
+                    onPressed: () {},
                     child: Row(
                       children: <Widget>[
                         Image.asset(
@@ -201,29 +203,31 @@ class _HomeScreenState extends State<HomeScreen> {
             borderRadius: BorderRadius.circular(15.0),
           ),
           child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Expanded(
-                  child: Image.asset(product.image),
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Expanded(
+                child: Image.asset(product.image),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 20, right: 20),
+                child: SelectableText(
+                  product.name,
+                  style: TextStyle(fontWeight: FontWeight.w500),
+                  textAlign: TextAlign.center,
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 20, right: 20),
-                  child: SelectableText(
-                    product.name,
-                    style: TextStyle(fontWeight: FontWeight.w500),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-                SizedBox(height: 10),
-                Text(
-                  product.price,
-                  style: TextStyle(color: Color(0xFFBD8456)),
-                ),
-                SizedBox(height: 5,)
-              ],
-            ),
+              ),
+              SizedBox(height: 10),
+              Text(
+                'Rp ${product.price}',
+                style: TextStyle(color: Color(0xFFBD8456)),
+              ),
+              SizedBox(
+                height: 5,
+              )
+            ],
           ),
         ),
-      );
+      ),
+    );
   }
 }
