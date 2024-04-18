@@ -1,12 +1,12 @@
 import 'package:fgd_2/components/cart_widget.dart';
-import 'package:fgd_2/data/product.dart';
+import 'package:fgd_2/data/product_data.dart';
 import 'package:fgd_2/providers/cart.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class DetailScreen extends StatefulWidget {
-  final Product product;
+  final ProductData product;
 
   const DetailScreen({Key? key, required this.product}) : super(key: key);
 

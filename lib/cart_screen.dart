@@ -19,132 +19,132 @@ class CartScreen extends StatelessWidget {
       ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
-        child: ListView.builder(
+        child: ListView.separated(
           itemCount: cartData.totalItem,
+          separatorBuilder: (context, index) => const SizedBox(
+            height: 16,
+          ),
           itemBuilder: (context, index) {
-            return Container(
-              // color: Colors.blue,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  //checkbox
-                  Checkbox(
-                    value: cartData.items.values.toList()[index].selected,
-                    onChanged: (value) {
-                      cartData.changeSelected(
-                          cartData.items.values.toList()[index].id);
-                    },
-                  ),
-                  //image
-                  Image(
-                    image: AssetImage(
-                        cartData.items.values.toList()[index].imagePath),
-                    height: 100,
-                  ),
-                  //title etc
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        //title
-                        Text(
-                          cartData.items.values.toList()[index].title,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            fontSize: 14,
-                          ),
-                          maxLines: 2,
+            return Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                //checkbox
+                Checkbox(
+                  value: cartData.items.values.toList()[index].selected,
+                  onChanged: (value) {
+                    cartData.changeSelected(
+                        cartData.items.values.toList()[index].id);
+                  },
+                ),
+                //image
+                Image(
+                  image: AssetImage(
+                      cartData.items.values.toList()[index].imagePath),
+                  height: 100,
+                ),
+                //title etc
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      //title
+                      Text(
+                        cartData.items.values.toList()[index].title,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontSize: 14,
                         ),
-                        //size
-                        Text(
-                          'Size: 14',
-                          style: GoogleFonts.josefinSans(
-                              fontWeight: FontWeight.w300),
-                        ),
-                        //price
-                        Text(
-                          'Rp ${cartData.items.values.toList()[0].price.toInt()}',
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 16),
-                        ),
-                        //qty
-                        Row(
-                          children: [
-                            Container(
-                              height: 35,
-                              width: 35,
-                              decoration: BoxDecoration(
-                                  color: Color(0xffE0E0E0),
-                                  borderRadius: BorderRadius.circular(10)),
-                              child: IconButton(
-                                onPressed: () {
-                                  cartData.addQty(
-                                      cartData.items.values.toList()[index].id);
-                                },
-                                icon: const Icon(
-                                  Icons.add,
-                                  size: 20,
-                                ),
-                              ),
-                            ),
-                            const SizedBox(
-                              width: 16,
-                            ),
-                            Text(
-                              cartData.items.values
-                                  .toList()[index]
-                                  .qty
-                                  .toString(),
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            const SizedBox(
-                              width: 16,
-                            ),
-                            Container(
-                              height: 35,
-                              width: 35,
-                              decoration: BoxDecoration(
-                                  color: Color(0xffE0E0E0),
-                                  borderRadius: BorderRadius.circular(10)),
-                              child: IconButton(
-                                onPressed: () {
-                                  cartData.decreaseQty(
-                                      cartData.items.values.toList()[index].id);
-                                },
-                                icon: const Icon(
-                                  Icons.remove,
-                                  size: 20,
-                                ),
-                              ),
-                            ),
-                            const Spacer(),
-                            IconButton(
+                        maxLines: 2,
+                      ),
+                      //size
+                      Text(
+                        'Size: 14',
+                        style: GoogleFonts.josefinSans(
+                            fontWeight: FontWeight.w300),
+                      ),
+                      //price
+                      Text(
+                        'Rp ${cartData.items.values.toList()[0].price.toInt()}',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 16),
+                      ),
+                      //qty
+                      Row(
+                        children: [
+                          Container(
+                            height: 35,
+                            width: 35,
+                            decoration: BoxDecoration(
+                                color: Color(0xffE0E0E0),
+                                borderRadius: BorderRadius.circular(10)),
+                            child: IconButton(
                               onPressed: () {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text('Produk Berhasil Dihapus'),
-                                    duration: Duration(seconds: 1),
-                                    behavior: SnackBarBehavior.floating,
-                                  ),
-                                );
-                                cartData.deleteItem(
+                                cartData.addQty(
                                     cartData.items.values.toList()[index].id);
                               },
                               icon: const Icon(
-                                Icons.delete_outline,
-                                size: 30,
+                                Icons.add,
+                                size: 20,
                               ),
                             ),
-                          ],
-                        )
-                      ],
-                    ),
-                  )
-                  //button delete
-                ],
-              ),
+                          ),
+                          const SizedBox(
+                            width: 16,
+                          ),
+                          Text(
+                            cartData.items.values
+                                .toList()[index]
+                                .qty
+                                .toString(),
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(
+                            width: 16,
+                          ),
+                          Container(
+                            height: 35,
+                            width: 35,
+                            decoration: BoxDecoration(
+                                color: Color(0xffE0E0E0),
+                                borderRadius: BorderRadius.circular(10)),
+                            child: IconButton(
+                              onPressed: () {
+                                cartData.decreaseQty(
+                                    cartData.items.values.toList()[index].id);
+                              },
+                              icon: const Icon(
+                                Icons.remove,
+                                size: 20,
+                              ),
+                            ),
+                          ),
+                          const Spacer(),
+                          IconButton(
+                            onPressed: () {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text('Produk Berhasil Dihapus'),
+                                  duration: Duration(seconds: 1),
+                                  behavior: SnackBarBehavior.floating,
+                                ),
+                              );
+                              cartData.deleteItem(
+                                  cartData.items.values.toList()[index].id);
+                            },
+                            icon: const Icon(
+                              Icons.delete_outline,
+                              size: 30,
+                            ),
+                          ),
+                        ],
+                      )
+                    ],
+                  ),
+                )
+                //button delete
+              ],
             );
           },
         ),

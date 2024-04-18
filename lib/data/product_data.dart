@@ -1,8 +1,8 @@
-class Product {
+class ProductData {
   final String name, description, image, id;
   final int price;
 
-  Product(
+  ProductData(
       {required this.name,
       required this.description,
       required this.image,
@@ -10,8 +10,8 @@ class Product {
       required this.id});
 }
 
-List<Product> products = [
-  Product(
+List<ProductData> products = [
+  ProductData(
     name: 'Signature Trilogy Whole Cake',
     description:
         'Kue cokelat premium yang kaya rasa cokelat dengan isian kacang almond dan hazelnut yang melimpah.',
@@ -19,7 +19,7 @@ List<Product> products = [
     price: 444000,
     id: '1',
   ),
-  Product(
+  ProductData(
     name: 'Signature Black Forest Piece Cake',
     description:
         'Black Forest klasik dengan kombinasi cream cokelat dan potongan black cherry kaya rasa ditambah topping buah cherry dan taburan cokelat serut.',
@@ -27,7 +27,7 @@ List<Product> products = [
     price: 59000,
     id: '2',
   ),
-  Product(
+  ProductData(
     name: 'Souffle Cheese Piece Cake',
     description:
         'Soufflé Cheese Piece Cake menggabungkan kelembutan soufflé dengan kelezatan keju yang khas, membentuk perpaduan yang sempurna antara rasa lembut dan kaya.',
@@ -35,7 +35,7 @@ List<Product> products = [
     price: 59000,
     id: '3',
   ),
-  Product(
+  ProductData(
     name: 'Signature Tiramisu Whole Cake',
     description:
         'Kue premium khas Italia dengan perpaduan pas antara espresso dan krim mascarpone cheese lembut ditambah taburan bubuk cocoa.',
@@ -43,7 +43,7 @@ List<Product> products = [
     price: 59000,
     id: '4',
   ),
-  Product(
+  ProductData(
     name: 'Classic Red Velvet Cake',
     description:
         'Kue Red Velvet premium bergaya klasik yang lembut dengan lapisan creamcheese frosting spesial yang kaya rasa.',
@@ -51,7 +51,7 @@ List<Product> products = [
     price: 59000,
     id: '5',
   ),
-  Product(
+  ProductData(
     name: 'Chantilly Choco Fresh Cream',
     description:
         'Kue cokelat chiffontender dari lapisan kue cokelat chiffon yang ringan dan lembut, dihiasi dengan krim segar yang lembut, dan dihiasi dengan taburan cokelat yang melimpah.',

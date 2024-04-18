@@ -1,5 +1,5 @@
 import 'package:fgd_2/components/cart_widget.dart';
-import 'package:fgd_2/data/product.dart';
+import 'package:fgd_2/data/product_data.dart';
 import 'package:fgd_2/detailScreen.dart';
 import 'package:fgd_2/providers/cart.dart';
 import 'package:flutter/material.dart';
@@ -189,7 +189,7 @@ class _HomeScreenState extends State<HomeScreen> {
 }
 
 class BuildCard extends StatelessWidget {
-  final Product product;
+  final ProductData product;
   const BuildCard({super.key, required this.product});
 
   @override
