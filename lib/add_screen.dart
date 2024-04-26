@@ -1,13 +1,44 @@
+import 'dart:io';
+
 import 'package:fgd_2/providers/product.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
+import 'package:path/path.dart' as p;
 
-class AddScreen extends StatelessWidget {
+class AddScreen extends StatefulWidget {
+  @override
+  State<AddScreen> createState() => _AddScreenState();
+}
+
+class _AddScreenState extends State<AddScreen> {
   var productC = TextEditingController();
+
   var descriptionC = TextEditingController();
+
   var imageC = TextEditingController();
+
   var priceC = TextEditingController();
+
+  File? _imageFile;
+  late String _fileName;
+  final picker = ImagePicker();
+
+  Future pickImage() async {
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+    setState(() {
+      if (pickedFile != null) {
+        _imageFile = File(pickedFile.path);
+        _fileName = p.basename(_imageFile!.path);
+      } else {
+        print('No image selected.');
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    final product = Provider.of<Product>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
         title: Text('Add Product'),
@@ -36,17 +67,50 @@ class AddScreen extends StatelessWidget {
                 ),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.only(top: 16),
-              child: TextField(
-                controller: imageC,
-                decoration: InputDecoration(
-                  labelText: 'Image Path',
-                  hintText: 'Image Path...',
-                  border: OutlineInputBorder(),
-                ),
-              ),
-            ),
+            _imageFile != null
+                ? Padding(
+                    padding: const EdgeInsets.only(top: 16),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Image.file(
+                              _imageFile!,
+                              width: 100,
+                              height: 100,
+                            ),
+                            Text(_fileName),
+                          ],
+                        ),
+                        IconButton(
+                          onPressed: () {
+                            setState(() {
+                              _imageFile = null;
+                            });
+                          },
+                          icon: Icon(Icons.delete),
+                        )
+                      ],
+                    ),
+                  )
+                : Padding(
+                    padding: const EdgeInsets.only(top: 16),
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        shape: LinearBorder(),
+                        padding: EdgeInsets.all(16),
+                      ),
+                      onPressed: () {
+                        pickImage();
+                      },
+                      child: Text(
+                        'Pick Image',
+                        style: TextStyle(color: Colors.black, fontSize: 16),
+                      ),
+                    ),
+                  ),
             Padding(
               padding: const EdgeInsets.only(top: 16),
               child: TextField(
@@ -63,14 +127,36 @@ class AddScreen extends StatelessWidget {
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   shape: LinearBorder(),
-                  padding: EdgeInsets.all(26),
+                  padding: EdgeInsets.all(16),
                 ),
                 onPressed: () {
-                  Product().addProduct(
-                    productC.text,
-                    descriptionC.text,
-                    imageC.text,
-                    int.parse(priceC.text),
+                  product.uploadImage(_imageFile!.path, _fileName).then(
+                    (imageUrl) {
+                      print(imageUrl);
+                      product.addProduct(
+                        productC.text,
+                        descriptionC.text,
+                        imageUrl,
+                        int.parse(priceC.text),
+                      );
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('Product Added'),
+                          duration: Duration(seconds: 2),
+                        ),
+                      );
+                      Navigator.pop(context);
+                      Navigator.pop(context);
+                    },
+                    onError: (err) {
+                      print('Error : $err');
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('Error : $err'),
+                          duration: Duration(seconds: 2),
+                        ),
+                      );
+                    },
                   );
                 },
                 child: Text(

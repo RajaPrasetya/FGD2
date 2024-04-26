@@ -11,10 +11,13 @@ class Cart with ChangeNotifier {
     return _items.length;
   }
 
-  int get totalHarga {
+  //get price total when selected is true
+  int get selectedTotal {
     var total = 0;
     _items.forEach((key, value) {
-      total += value.qty * value.price.toInt();
+      if (value.selected) {
+        total += value.qty * value.price.toInt();
+      }
     });
     return total;
   }

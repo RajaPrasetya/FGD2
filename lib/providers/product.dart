@@ -1,8 +1,28 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+
 import 'package:flutter/material.dart';
 
 class Product with ChangeNotifier {
+  var filterC = TextEditingController();
+  var quantity = 0;
   final db = FirebaseFirestore.instance;
+  final storageRef = FirebaseStorage.instance.ref();
+
+  //upload images file to firebase storage
+  Future<String> uploadImage(String imagePath, String imageName) async {
+    File image = File(imagePath);
+    final imageRef = storageRef.child('images/$imageName');
+    try {
+      await imageRef.putFile(image);
+      return await imageRef.getDownloadURL();
+    } catch (err) {
+      print('Error : $err');
+      return '';
+    }
+  }
 
   //TODO: ADD Product
   void addProduct(
@@ -19,5 +39,15 @@ class Product with ChangeNotifier {
     } catch (err) {
       print('Error : $err');
     }
+  }
+
+  //TODO: Stream Product
+  Stream<QuerySnapshot> get productStream =>
+      db.collection('products').snapshots();
+
+  //TODO: Get Data
+  Future<DocumentSnapshot<Object?>> getData(String docID) async {
+    DocumentReference docRef = db.collection('products').doc(docID);
+    return docRef.get();
   }
 }

@@ -38,7 +38,7 @@ class CartScreen extends StatelessWidget {
                 ),
                 //image
                 Image(
-                  image: AssetImage(
+                  image: NetworkImage(
                       cartData.items.values.toList()[index].imagePath),
                   height: 100,
                 ),
@@ -64,7 +64,7 @@ class CartScreen extends StatelessWidget {
                       ),
                       //price
                       Text(
-                        'Rp ${cartData.items.values.toList()[0].price.toInt()}',
+                        'Rp ${cartData.items.values.toList()[index].price.toInt()}',
                         style: TextStyle(
                             fontWeight: FontWeight.bold, fontSize: 16),
                       ),
@@ -178,7 +178,7 @@ class CartScreen extends StatelessWidget {
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
                 Text(
-                  formatter.format(cartData.totalHarga),
+                  formatter.format(cartData.selectedTotal),
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     color: Color(0xffBD8456),

@@ -1,7 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fgd_2/add_screen.dart';
 import 'package:fgd_2/components/cart_widget.dart';
-import 'package:fgd_2/data/product_data.dart';
 import 'package:fgd_2/detailScreen.dart';
 import 'package:fgd_2/providers/cart.dart';
+import 'package:fgd_2/providers/product.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -18,13 +20,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final product = Provider.of<Product>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
         surfaceTintColor: Colors.white,
-        leading: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Icon(Icons.menu),
-        ),
         title: Image.asset(
           'assets/title.png',
           height: 50,
@@ -41,11 +40,37 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
         backgroundColor: Colors.white,
       ),
+      drawer: Drawer(
+        backgroundColor: Colors.white,
+        child: ListView(
+          children: [
+            ListTile(
+              contentPadding: EdgeInsets.symmetric(horizontal: 16),
+              title: Center(
+                child: Image.asset('assets/title.png'),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              child: ListTile(
+                onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => AddScreen(),
+                    )),
+                title: Text('Add Product'),
+                tileColor: Color(0xFFBD8456),
+              ),
+            ),
+          ],
+        ),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Column(
           children: <Widget>[
             TextField(
+              controller: product.filterC,
               decoration: InputDecoration(
                 labelText: "Search here!",
                 prefixIcon: Icon(Icons.search),
@@ -161,26 +186,50 @@ class _HomeScreenState extends State<HomeScreen> {
             SizedBox(
               height: 10,
             ),
-            Expanded(
-              child: isGridView
-                  ? GridView.builder(
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        crossAxisSpacing: 20,
-                        mainAxisSpacing: 20,
-                      ),
-                      itemCount: products.length,
-                      itemBuilder: (context, index) {
-                        return BuildCard(product: products[index]);
-                      },
-                    )
-                  : ListView.builder(
-                      itemCount: products.length,
-                      itemBuilder: (context, index) {
-                        return BuildCard(product: products[index]);
-                      },
-                    ),
-            ),
+            StreamBuilder<QuerySnapshot>(
+              stream: Product().productStream,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.active) {
+                  var listAllDocs = snapshot.data!.docs;
+                  // print(listAllDocs[0].data() as Map<String, dynamic>);
+                  return Expanded(
+                    child: isGridView
+                        ? GridView.builder(
+                            gridDelegate:
+                                SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2,
+                              crossAxisSpacing: 20,
+                              mainAxisSpacing: 20,
+                            ),
+                            itemCount: listAllDocs.length,
+                            itemBuilder: (context, index) {
+                              return BuildCard(
+                                productData: listAllDocs[index].data()
+                                    as Map<String, dynamic>,
+                                productID: listAllDocs[index].id,
+                              );
+                            },
+                          )
+                        : ListView.builder(
+                            itemCount: listAllDocs.length,
+                            itemBuilder: (context, index) {
+                              return BuildCard(
+                                productData: listAllDocs[index].data()
+                                    as Map<String, dynamic>,
+                                productID: listAllDocs[index].id,
+                              );
+                            },
+                          ),
+                  );
+                }
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+                return Text('No Data');
+              },
+            )
           ],
         ),
       ),
@@ -189,8 +238,10 @@ class _HomeScreenState extends State<HomeScreen> {
 }
 
 class BuildCard extends StatelessWidget {
-  final ProductData product;
-  const BuildCard({super.key, required this.product});
+  final Map<String, dynamic> productData;
+  final String productID;
+  const BuildCard(
+      {super.key, required this.productData, required this.productID});
 
   @override
   Widget build(BuildContext context) {
@@ -200,7 +251,9 @@ class BuildCard extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => DetailScreen(product: product),
+            builder: (context) => DetailScreen(
+              productID: productID,
+            ),
           ),
         );
       },
@@ -215,19 +268,23 @@ class BuildCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Expanded(
-                child: Image.asset(product.image),
+                child: Image.network(productData['image']),
               ),
               Padding(
                 padding: const EdgeInsets.only(left: 20, right: 20),
-                child: SelectableText(
-                  product.name,
-                  style: TextStyle(fontWeight: FontWeight.w500),
+                child: Text(
+                  productData['name'],
+                  style: TextStyle(
+                    fontWeight: FontWeight.w500,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                   textAlign: TextAlign.center,
+                  maxLines: 2,
                 ),
               ),
               SizedBox(height: 10),
               Text(
-                'Rp ${formatter.format(product.price)}',
+                'Rp ${formatter.format(productData['price'])}',
                 style: TextStyle(color: Color(0xFFBD8456)),
               ),
               SizedBox(
