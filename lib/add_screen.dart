@@ -126,9 +126,11 @@ class _AddScreenState extends State<AddScreen> {
               padding: const EdgeInsets.only(top: 32),
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  shape: LinearBorder(),
-                  padding: EdgeInsets.all(16),
-                ),
+                    backgroundColor: Color(0xFFBD8456),
+                    minimumSize: Size(double.infinity, 40),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(0),
+                    )),
                 onPressed: () {
                   product.uploadImage(_imageFile!.path, _fileName).then(
                     (imageUrl) {
@@ -164,7 +166,7 @@ class _AddScreenState extends State<AddScreen> {
                   style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
-                      color: Colors.black),
+                      color: Colors.white),
                 ),
               ),
             )

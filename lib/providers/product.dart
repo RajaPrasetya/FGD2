@@ -7,6 +7,9 @@ import 'package:flutter/material.dart';
 
 class Product with ChangeNotifier {
   var filterC = TextEditingController();
+
+  var productC = TextEditingController();
+
   var quantity = 0;
   final db = FirebaseFirestore.instance;
   final storageRef = FirebaseStorage.instance.ref();
@@ -34,8 +37,39 @@ class Product with ChangeNotifier {
       "price": price,
     };
     try {
-      db.collection('products').add(product).then((value) =>
-          print('Product Berhasil Ditambahkan dengan ID: ${value.id}'));
+      db.collection('products').add(product).then((value) {
+        print('Product Berhasil Ditambahkan dengan ID: ${value.id}');
+      });
+    } catch (err) {
+      print('Error : $err');
+    }
+  }
+
+  //TODO: Update Product
+  void updateProduct(String docID, String productName, String description,
+      String imagePath, int price) {
+    final product = <String, dynamic>{
+      "name": productName,
+      "description": description,
+      "image": imagePath,
+      "price": price,
+    };
+    try {
+      db.collection('products').doc(docID).update(product).then(
+          (value) => print('Product Berhasil Diupdate dengan ID: $docID'));
+    } catch (err) {
+      print('Error : $err');
+    }
+  }
+
+  //TODO: Delete Product
+  void deleteProduct(String docID) {
+    try {
+      db
+          .collection('products')
+          .doc(docID)
+          .delete()
+          .then((value) => print('Product Berhasil Dihapus dengan ID: $docID'));
     } catch (err) {
       print('Error : $err');
     }
