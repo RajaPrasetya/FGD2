@@ -3,8 +3,11 @@ import 'dart:io';
 import 'package:fgd_2/providers/product.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:path/path.dart' as p;
+
+import 'homeScreen.dart';
 
 class AddScreen extends StatefulWidget {
   @override
@@ -20,6 +23,8 @@ class _AddScreenState extends State<AddScreen> {
 
   var priceC = TextEditingController();
 
+  final DateFormat formatter = DateFormat('yyyyMMddHmmss');
+
   File? _imageFile;
   late String _fileName;
   final picker = ImagePicker();
@@ -29,7 +34,8 @@ class _AddScreenState extends State<AddScreen> {
     setState(() {
       if (pickedFile != null) {
         _imageFile = File(pickedFile.path);
-        _fileName = p.basename(_imageFile!.path);
+        _fileName =
+            formatter.format(DateTime.now()) + p.extension(pickedFile.path);
       } else {
         print('No image selected.');
       }
@@ -147,8 +153,12 @@ class _AddScreenState extends State<AddScreen> {
                           duration: Duration(seconds: 2),
                         ),
                       );
-                      Navigator.pop(context);
-                      Navigator.pop(context);
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => HomeScreen(),
+                        ),
+                      );
                     },
                     onError: (err) {
                       print('Error : $err');

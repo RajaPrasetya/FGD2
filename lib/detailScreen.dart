@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fgd_2/components/cart_widget.dart';
 import 'package:fgd_2/edit_screen.dart';
+import 'package:fgd_2/providers/auth.dart';
 import 'package:fgd_2/providers/cart.dart';
 import 'package:fgd_2/providers/product.dart';
 import 'package:flutter/material.dart';
@@ -17,8 +18,6 @@ class DetailScreen extends StatefulWidget {
 
 class _DetailScreenState extends State<DetailScreen> {
   int quantity = 1;
-
-  bool isAdmin = true;
 
   void increaseQuantity() {
     setState(() {
@@ -54,20 +53,24 @@ class _DetailScreenState extends State<DetailScreen> {
               );
             },
           ),
-          isAdmin == true
-              ? IconButton(
-                  onPressed: () {
-                    Navigator.push(context, MaterialPageRoute(
-                      builder: (context) {
-                        return EditScreen(
-                          productID: widget.productID,
-                        );
+          Consumer<Auth>(
+            builder: (context, value, child) {
+              return value.isUserLogin() && value.userRole == 'admin'
+                  ? IconButton(
+                      onPressed: () {
+                        Navigator.push(context, MaterialPageRoute(
+                          builder: (context) {
+                            return EditScreen(
+                              productID: widget.productID,
+                            );
+                          },
+                        ));
                       },
-                    ));
-                  },
-                  icon: Icon(Icons.edit),
-                )
-              : Container(),
+                      icon: Icon(Icons.edit),
+                    )
+                  : Container();
+            },
+          )
         ],
         surfaceTintColor: Colors.white,
         backgroundColor: Colors.white,

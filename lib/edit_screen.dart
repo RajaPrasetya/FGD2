@@ -1,3 +1,4 @@
+import 'package:fgd_2/homeScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -109,8 +110,12 @@ class _EditScreenState extends State<EditScreen> {
                         ),
                       );
                       //pop 2x to go back to home screen
-                      Navigator.pop(context);
-                      Navigator.pop(context);
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => HomeScreen(),
+                        ),
+                      );
                     },
                     child: const Text(
                       'Hapus',

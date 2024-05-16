@@ -41,6 +41,10 @@ class CartScreen extends StatelessWidget {
                   image: NetworkImage(
                       cartData.items.values.toList()[index].imagePath),
                   height: 100,
+                  width: 100,
+                ),
+                const SizedBox(
+                  width: 16,
                 ),
                 //title etc
                 Expanded(

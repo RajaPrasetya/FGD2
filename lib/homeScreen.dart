@@ -2,11 +2,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fgd_2/add_screen.dart';
 import 'package:fgd_2/components/cart_widget.dart';
 import 'package:fgd_2/detailScreen.dart';
+import 'package:fgd_2/login_screen.dart';
 import 'package:fgd_2/providers/cart.dart';
 import 'package:fgd_2/providers/product.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+
+import 'providers/auth.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -19,8 +22,26 @@ class _HomeScreenState extends State<HomeScreen> {
   bool isGridView = true;
 
   @override
+  void initState() {
+    displayUserRole();
+    super.initState();
+  }
+
+  void displayUserRole() async {
+    final auth = Provider.of<Auth>(context, listen: false);
+    String role = await auth.getUserRole();
+    print('User role is: $role');
+    setState(() {
+      auth.userRole = role;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     final product = Provider.of<Product>(context, listen: false);
+    final auth = Provider.of<Auth>(context, listen: false);
+    //get user role from auth function
+
     return Scaffold(
       appBar: AppBar(
         surfaceTintColor: Colors.white,
@@ -50,18 +71,67 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Image.asset('assets/title.png'),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 16),
-              child: ListTile(
-                onTap: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => AddScreen(),
-                    )),
-                title: Text('Add Product'),
-                tileColor: Color(0xFFBD8456),
-              ),
+            Consumer<Auth>(
+              builder: (context, value, child) {
+                return value.isUserLogin() && value.userRole == 'admin'
+                    ? Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8),
+                        child: ListTile(
+                          onTap: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => AddScreen(),
+                            ),
+                          ),
+                          title: Text('Add Product'),
+                          tileColor: Color(0xFFBD8456),
+                        ),
+                      )
+                    : SizedBox();
+              },
             ),
+            Consumer<Auth>(
+              builder: (context, value, child) {
+                return auth.isUserLogin()
+                    ? Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8),
+                        child: ListTile(
+                          onTap: () => auth.logoutUser().then(
+                            (value) {
+                              if (value) {
+                                Navigator.pop(context);
+                                //change user role to user
+                                setState(() {
+                                  auth.userRole = 'user';
+                                });
+                                //show snackbar logout success
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text('Logout Successfully'),
+                                    backgroundColor: Colors.green,
+                                  ),
+                                );
+                              }
+                            },
+                          ),
+                          title: Text('Logout'),
+                          tileColor: Color(0xFFBD8456),
+                        ),
+                      )
+                    : Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8),
+                        child: ListTile(
+                          onTap: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => LoginScreen(),
+                              )),
+                          title: Text('Login'),
+                          tileColor: Color(0xFFBD8456),
+                        ),
+                      );
+              },
+            )
           ],
         ),
       ),
@@ -72,7 +142,7 @@ class _HomeScreenState extends State<HomeScreen> {
             TextField(
               controller: product.filterC,
               decoration: InputDecoration(
-                labelText: "Search here!",
+                labelText: "Search Here!",
                 prefixIcon: Icon(Icons.search),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.all(Radius.circular(25.0)),
