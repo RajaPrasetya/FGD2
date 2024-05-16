@@ -3,6 +3,7 @@
 import 'package:firebase_core/firebase_core.dart' show FirebaseOptions;
 import 'package:flutter/foundation.dart'
     show defaultTargetPlatform, kIsWeb, TargetPlatform;
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 /// Default [FirebaseOptions] for use with your Firebase apps.
 ///
@@ -52,11 +53,11 @@ class DefaultFirebaseOptions {
     }
   }
 
-  static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyD-exDZw9ntZfrsMucTiMsckodbO66i-4c',
-    appId: '1:1056024534765:android:1d83c3ab61901a4919b6e4',
-    messagingSenderId: '1056024534765',
-    projectId: 'creme-bakery',
-    storageBucket: 'creme-bakery.appspot.com',
+  static FirebaseOptions android = FirebaseOptions(
+    apiKey: dotenv.env['APIKEY']!,
+    appId: dotenv.env['APPID']!,
+    messagingSenderId: dotenv.env['MESSAGINGSENDERID']!,
+    projectId: dotenv.env['PROJECTID']!,
+    storageBucket: dotenv.env['STORAGEBUCKET']!,
   );
 }
