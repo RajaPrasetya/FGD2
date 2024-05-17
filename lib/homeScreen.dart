@@ -3,6 +3,7 @@ import 'package:fgd_2/add_screen.dart';
 import 'package:fgd_2/components/cart_widget.dart';
 import 'package:fgd_2/detailScreen.dart';
 import 'package:fgd_2/login_screen.dart';
+import 'package:fgd_2/profile_screen.dart';
 import 'package:fgd_2/providers/cart.dart';
 import 'package:fgd_2/providers/product.dart';
 import 'package:flutter/material.dart';
@@ -61,19 +62,34 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
         backgroundColor: Colors.white,
       ),
-      drawer: Drawer(
-        backgroundColor: Colors.white,
-        child: ListView(
-          children: [
-            ListTile(
-              contentPadding: EdgeInsets.symmetric(horizontal: 16),
-              title: Center(
-                child: Image.asset('assets/title.png'),
-              ),
-            ),
-            Consumer<Auth>(
-              builder: (context, value, child) {
-                return value.isUserLogin() && value.userRole == 'admin'
+      drawer: Consumer<Auth>(
+        builder: (context, value, child) {
+          return Drawer(
+            backgroundColor: Colors.white,
+            child: ListView(
+              children: [
+                ListTile(
+                  contentPadding: EdgeInsets.symmetric(horizontal: 16),
+                  title: Center(
+                    child: Image.asset('assets/title.png'),
+                  ),
+                ),
+                value.isUserLogin()
+                    ? Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8),
+                        child: ListTile(
+                          onTap: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ProfileScreen(),
+                            ),
+                          ),
+                          title: Text('Profile'),
+                          tileColor: Color(0xFFBD8456),
+                        ),
+                      )
+                    : SizedBox(),
+                value.isUserLogin() && value.userRole == 'admin'
                     ? Padding(
                         padding: const EdgeInsets.symmetric(vertical: 8),
                         child: ListTile(
@@ -87,16 +103,12 @@ class _HomeScreenState extends State<HomeScreen> {
                           tileColor: Color(0xFFBD8456),
                         ),
                       )
-                    : SizedBox();
-              },
-            ),
-            Consumer<Auth>(
-              builder: (context, value, child) {
-                return auth.isUserLogin()
+                    : SizedBox(),
+                value.isUserLogin()
                     ? Padding(
                         padding: const EdgeInsets.symmetric(vertical: 8),
                         child: ListTile(
-                          onTap: () => auth.logoutUser().then(
+                          onTap: () => value.logoutUser().then(
                             (value) {
                               if (value) {
                                 Navigator.pop(context);
@@ -129,11 +141,11 @@ class _HomeScreenState extends State<HomeScreen> {
                           title: Text('Login'),
                           tileColor: Color(0xFFBD8456),
                         ),
-                      );
-              },
-            )
-          ],
-        ),
+                      )
+              ],
+            ),
+          );
+        },
       ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
